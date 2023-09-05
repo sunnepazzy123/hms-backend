@@ -1,7 +1,7 @@
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document, Types } from 'mongoose';
 import { IVital, VitalsSchema } from './vitals.schema';
-import { statusType } from 'src/constants/enums';
+import { statusEnumType, statusType } from 'src/constants/enums';
 
 export type INote = {
   description: string;
@@ -60,8 +60,8 @@ export class MedicalRecord extends Document<IMedicalRecord> {
 
   @Prop({
     required: true,
-    default: statusType.open,
-    enum: statusType,
+    default: statusEnumType.open,
+    enum: statusEnumType,
   })
   status: string;
 

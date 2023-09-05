@@ -12,7 +12,7 @@ export enum roleType {
   patient = 'patient',
 }
 
-export enum statusType {
+export enum statusEnumType {
   busy = 'busy',
   open = 'open',
   closed = 'closed',
@@ -23,3 +23,6 @@ export enum billingStatusType {
   confirm = 'confirm',
   unconfirm = 'unconfirm',
 }
+
+
+export type statusType = 'busy' | 'open' | 'closed' |'processed'

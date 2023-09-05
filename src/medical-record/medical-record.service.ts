@@ -48,7 +48,10 @@ export class MedicalRecordService {
     return await medicalRecord.save();
   }
 
-  async findAll(status?: statusType, card_no?: string): Promise<MedicalRecord[]> {
+  async findAll(
+    status?: statusType,
+    card_no?: string,
+  ): Promise<MedicalRecord[]> {
     // Calculate the date 50 hours ago
     const fiftyHourAgo = hoursAgo(50);
     if (status) {
@@ -60,10 +63,10 @@ export class MedicalRecordService {
         .exec();
     }
     if (card_no) {
-      const medicalRecords = await this.findByCardNumber(card_no)
+      const medicalRecords = await this.findByCardNumber(card_no);
       return medicalRecords;
     }
-    
+
     return await this.medicalRecordModel
       .find({ created_at: { $lt: fiftyHourAgo } })
       .populate(['patient_id', 'staff_id'])

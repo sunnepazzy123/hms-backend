@@ -6,7 +6,7 @@ import {
   IsString,
 } from 'class-validator';
 import { Types } from 'mongoose';
-import { statusType } from 'src/constants/enums';
+import { statusEnumType, statusType } from 'src/constants/enums';
 import { IVital } from 'src/schema/vitals.schema';
 
 export class UpdateMedicalRecordDto {
@@ -42,7 +42,7 @@ export class UpdateMedicalRecordDto {
   @IsOptional()
   comments: string;
 
-  @IsEnum(statusType)
+  @IsEnum(statusEnumType)
   @IsOptional()
   status: statusType;
 }
