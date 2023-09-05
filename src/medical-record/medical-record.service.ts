@@ -53,10 +53,10 @@ export class MedicalRecordService {
     card_no?: string,
   ): Promise<MedicalRecord[]> {
     // Calculate the date 50 hours ago
-    const fiftyHourAgo = hoursAgo(50);
+    // const fiftyHourAgo = hoursAgo(50);
     if (status) {
       return await this.medicalRecordModel
-        .find({ status: status, $gt: fiftyHourAgo })
+        .find({ status: status, })
         .populate(['patient_id', 'staff_id'])
         .sort({ created_at: 'desc' })
         .limit(100)
@@ -68,7 +68,7 @@ export class MedicalRecordService {
     }
 
     return await this.medicalRecordModel
-      .find({ created_at: { $lt: fiftyHourAgo } })
+      .find()
       .populate(['patient_id', 'staff_id'])
       .sort({ created_at: 'desc' })
       .limit(100)
