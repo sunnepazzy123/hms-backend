@@ -18,6 +18,8 @@ import { CreateMedicalRecordDto } from './dto/create_medicalRecord.dto';
 import { UpdateMedicalRecordDto } from './dto/update_medicalRecord.dto';
 import { statusType } from 'src/constants/enums';
 import { ApiTags } from '@nestjs/swagger';
+import { IMedicalRecord } from 'src/schema/medical-record.schema';
+import { QueryDto } from './dto/query.dto';
 
 @ApiTags('MedicalRecord')
 @Controller('/medical-records')
@@ -29,11 +31,13 @@ export class MedicalRecordController {
   ) {}
 
   @Get('/')
-  async get(
-    @Query('status') status: statusType,
-    @Query('card_no') card_no: string,
-  ) {
-    return this.medicalRecordService.findAll(status, card_no);
+  async get(@Query() query: QueryDto) {
+    return this.medicalRecordService.findAll(query);
+  }
+
+  @Get('/patients/:id')
+  async getPatientRecord(@Param('id', ParseObjectIdPipe) id: Types.ObjectId) {
+    return this.medicalRecordService.findByPatientId(id);
   }
 
   @Get('/:id')

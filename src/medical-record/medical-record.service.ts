@@ -1,10 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { MedicalRecord } from 'src/schema/medical-record.schema';
+import { IMedicalRecord, MedicalRecord } from 'src/schema/medical-record.schema';
 import { ICreateMedicalRecord } from './dto/create_medicalRecord.dto';
-import { Model, Types } from 'mongoose';
+import  { Model, Types } from 'mongoose';
 import { UpdateMedicalRecordDto } from './dto/update_medicalRecord.dto';
-import { statusType } from 'src/constants/enums';
 import { hoursAgo } from 'src/utils';
 
 @Injectable()
@@ -32,9 +31,8 @@ export class MedicalRecordService {
       throw new NotFoundException('Medical Record not found');
     }
 
-    if (body.staff_id) {
-      const staff_id = new Types.ObjectId(body.staff_id);
-      medicalRecord.staff_id = staff_id;
+    if (body.staff_id) {    
+      medicalRecord.staff_id = new Types.ObjectId(body.staff_id);
     }
 
     const assignee = new Types.ObjectId(body.assignee);
@@ -48,31 +46,18 @@ export class MedicalRecordService {
     return await medicalRecord.save();
   }
 
-  async findAll(
-    status?: statusType,
-    card_no?: string,
-  ): Promise<MedicalRecord[]> {
-    // Calculate the date 50 hours ago
-    const fiftyHourAgo = hoursAgo(50);
-    if (status) {
-      return await this.medicalRecordModel
-        .find({ status: status, $gt: fiftyHourAgo })
-        .populate(['patient_id', 'staff_id'])
-        .sort({ created_at: 'desc' })
-        .limit(100)
-        .exec();
+  async findAll(option: Partial<IMedicalRecord>): Promise<MedicalRecord[]> {
+
+    const fiftyHourAgo = hoursAgo(1050); // Calculate the date 50 hours ago
+    if (option.status) {
+      return this.queryBuilder({status: option.status}, fiftyHourAgo)
     }
-    if (card_no) {
-      const medicalRecords = await this.findByCardNumber(card_no);
-      return medicalRecords;
+    if (option.card_no) {
+      return this.queryBuilder({card_no: option.card_no}, fiftyHourAgo)
     }
 
-    return await this.medicalRecordModel
-      .find({ created_at: { $gt: fiftyHourAgo } })
-      .populate(['patient_id', 'staff_id'])
-      .sort({ created_at: 'desc' })
-      .limit(100)
-      .exec();
+   return this.queryBuilder({}, fiftyHourAgo)
+
   }
 
   async findOne(id: Types.ObjectId): Promise<MedicalRecord> {
@@ -97,4 +82,36 @@ export class MedicalRecordService {
       .limit(100)
       .exec();
   }
+
+  async findByPatientId(patient_id: Types.ObjectId): Promise<MedicalRecord[]> {
+    return await this.medicalRecordModel
+      .find({ patient_id: patient_id})
+      .populate(['staff_id', 'patient_id'])
+      .sort({ created_at: -1 })
+      .limit(30)
+      .exec();
+  }
+
+  private async queryBuilder(model: Partial<IMedicalRecord>, time: Date) {
+    const queryOption = {
+      ...model,
+      created_at: { $gt: time } // Assuming 'created_at' is the field you want to compare
+    } as any;
+  
+    try {
+     
+       const result =  await this.medicalRecordModel
+        .find(queryOption)
+        .populate(['staff_id', 'patient_id'])
+        .sort({ created_at: 'desc' })
+        .limit(100)
+        .exec();
+      return result
+    } catch (error) {
+      // Handle any errors here
+      console.error('Error in queryBuilder:', error);
+      throw error;
+    }
+  }
+  
 }

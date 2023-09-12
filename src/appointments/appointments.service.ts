@@ -14,7 +14,7 @@ export class AppointmentService {
   }
 
   async findAll(status?: statusType): Promise<MedicalRecord[]> {
-    return await this.medicalRecordService.findAll(status);
+    return await this.medicalRecordService.findAll({status});
   }
 
   async update(
