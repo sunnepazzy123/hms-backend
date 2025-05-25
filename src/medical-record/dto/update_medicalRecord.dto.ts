@@ -1,47 +1,22 @@
-import {
-  IsEnum,
-  IsNotEmpty,
-  IsObject,
-  IsOptional,
-  IsString,
-} from 'class-validator';
-import { Types } from 'mongoose';
+import { PartialType } from '@nestjs/swagger';
+import { ApiPropertyOptional } from '@nestjs/swagger';
+import { IsEnum, IsString, IsOptional } from 'class-validator';
 import { statusEnumType, statusType } from 'src/constants/enums';
-import { IVital } from 'src/schema/vitals.schema';
+import { CreateMedicalRecordDto } from './create_medicalRecord.dto';
+import { Types } from 'mongoose';
 
-export class UpdateMedicalRecordDto {
+export class UpdateMedicalRecordDto extends PartialType(CreateMedicalRecordDto) {
+  @ApiPropertyOptional({ example: '664b11110a2d9a5b8d2c3c4e' })
   @IsString()
   @IsOptional()
-  staff_id: string;
-
-  @IsString()
-  @IsNotEmpty()
   patient_id: string;
 
-  @IsString()
-  @IsNotEmpty()
-  card_no: string;
-
-  @IsString()
-  @IsOptional()
-  diagnosis: string;
-
-  @IsObject()
-  @IsOptional()
-  vital: IVital;
-
-  @IsString()
-  @IsOptional()
-  note: string;
-
-  @IsString()
-  @IsOptional()
-  assignee: string;
-
+  @ApiPropertyOptional({ example: 'Reviewed and updated by staff.' })
   @IsString()
   @IsOptional()
   comments: string;
 
+  @ApiPropertyOptional({ enum: statusEnumType, example: statusEnumType.busy })
   @IsEnum(statusEnumType)
   @IsOptional()
   status: statusType;

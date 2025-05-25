@@ -1,55 +1,26 @@
+import { ApiProperty } from '@nestjs/swagger';
 import {
-  IsDateString,
   IsEmail,
   IsEnum,
   IsNotEmpty,
-  IsNumber,
-  IsOptional,
   IsString,
 } from 'class-validator';
-import { genderType, roleType } from 'src/constants/enums';
+import { roleType } from 'src/constants/enums';
+import { BasePersonDto } from './basePerson.dto';
 
-export class CreateStaffDto {
-  @IsString()
-  @IsNotEmpty()
-  firstName: string;
 
-  @IsString()
-  @IsNotEmpty()
-  lastName: string;
-
+export class CreateStaffDto extends BasePersonDto {
+  @ApiProperty({ example: 'staff@example.com', description: 'Email address' })
   @IsEmail()
   @IsNotEmpty()
   username: string;
 
+  @ApiProperty({ example: 'StrongPass123!', description: 'Password' })
   @IsString()
   @IsNotEmpty()
   password: string;
 
-  @IsString()
-  @IsOptional()
-  card_no: string;
-
-  @IsDateString()
-  @IsNotEmpty()
-  dob: string;
-
-  @IsEnum(genderType)
-  @IsNotEmpty()
-  gender: genderType;
-
-  @IsString()
-  @IsNotEmpty()
-  address: string;
-
-  @IsNumber()
-  @IsNotEmpty()
-  phone: string;
-
-  @IsNumber()
-  @IsOptional()
-  guardian_phone: string;
-
+  @ApiProperty({ example: roleType.admin, enum: roleType, description: 'Staff role' })
   @IsEnum(roleType)
   @IsNotEmpty()
   role: roleType;

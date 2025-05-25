@@ -15,14 +15,14 @@ export class AuthController {
     private vaultService: VaultService,
   ) {}
 
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   @Post('/register_patient')
   async register_patient(@Body() body: CreatePatientDto, @Req() req: any) {
     const patient = await this.authService.register_patient(body);
     return patient;
   }
 
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   @Post('/register_staff')
   async register_staff(@Body() body: CreateStaffDto) {
     const staff = await this.authService.register_staff(body);
@@ -35,6 +35,6 @@ export class AuthController {
     req.user = user;
     const token = await this.vaultService.generateToken(user);
 
-    return { token: token };
+    return { token };
   }
 }

@@ -1,3 +1,4 @@
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsNotEmpty,
   IsNumber,
@@ -49,22 +50,27 @@ export class IsValidVitalConstraint implements ValidatorConstraintInterface {
 }
 
 export class IVitalDto {
+  @ApiPropertyOptional({ example: 120 })
   @IsNumber()
   @IsOptional()
   blood_pressure: number;
 
+  @ApiProperty({ example: 80 })
   @IsNumber()
   @IsNotEmpty()
   pulse: number;
 
+  @ApiProperty({ example: 36.6 })
   @IsNumber()
   @IsNotEmpty()
   temperature: number;
 
+  @ApiProperty({ example: 170 })
   @IsNumber()
   @IsNotEmpty()
   height: number;
 
+  @ApiProperty({ example: 65 })
   @IsNumber()
   @IsNotEmpty()
   weight: number;

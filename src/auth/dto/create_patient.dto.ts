@@ -1,46 +1,11 @@
-import {
-  IsDateString,
-  IsEnum,
-  IsNotEmpty,
-  IsNumber,
-  IsOptional,
-  IsString,
-} from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsEnum, IsNotEmpty } from 'class-validator';
 import { roleType } from 'src/constants/enums';
+import { BasePersonDto } from './basePerson.dto';
 
-export class CreatePatientDto {
-  @IsString()
-  @IsNotEmpty()
-  firstName: string;
 
-  @IsString()
-  @IsNotEmpty()
-  lastName: string;
-
-  @IsString()
-  @IsOptional()
-  card_no: string;
-
-  @IsDateString()
-  @IsNotEmpty()
-  dob: string;
-
-  @IsEnum({ male: 'male', female: 'female' })
-  @IsNotEmpty()
-  gender: string;
-
-  @IsString()
-  @IsNotEmpty()
-  address: string;
-
-  @IsNumber()
-  @IsNotEmpty()
-  phone: string;
-
-  @IsNumber()
-  @IsOptional()
-  guardian_phone: string;
-
+export class CreatePatientDto extends BasePersonDto {
+  @ApiProperty({ example: 'patient', enum: ['patient'], description: 'Role must be patient' })
   @IsEnum({ patient: 'patient' })
   @IsNotEmpty()
   role: roleType.patient;
